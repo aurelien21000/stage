@@ -1,4 +1,3 @@
-
 from scipy.stats import wasserstein_distance
 
 from PIC import calculer_densite_pic_ordre1
