@@ -108,7 +108,7 @@ def executer_simulation_complete_numba(
                                 cos_sum[l] += np.cos(theta[k])
                                 sin_sum[l] += np.sin(theta[k])
 
-        # pas de temps adaptatif
+        #adaptative timestep
         v_max = 1e-9
         N_safe = N if N > 0 else 1
         M_safe = M if M > 0 else 1
@@ -272,7 +272,7 @@ class SimulationSwimmers:
             if key in self.params:
                 self.params[key] = value
 
-        # on doit recalculer les constantes
+        #adaptating all constants
         if self.params['tau'] > 0:
             self.C_phi_factor = -3.0 * self.params['C_phi'] / (np.pi * self.params['tau'] ** 2)
         else:

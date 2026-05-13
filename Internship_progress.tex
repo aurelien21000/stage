@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern} % Arrête définitivement la boucle de messages METAFONT
+\usepackage{lmodern}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -10,11 +10,11 @@
 \usepackage{amstext}
 \usepackage{amsopn}
 
-% --- CONFIGURATION DES CHEMINS D'ACCÈS AUX IMAGES ---
 \graphicspath{
     {images/TDA/}
     {images/phase_final_repulsive/}
     {images/phase_final_adhesive/}
+    {images/test_distance/}
 }
 
 \title{Internship Progress}
@@ -312,10 +312,22 @@ After unsuccessfully changing only the stiffness or trying to vary the parameter
         \item $\kappa \mu$ : This ratio called $b_p$ in the article played the key role of pattern emergence. We had to keep it less than 1 to see pattern emergence.
         \item $\frac{\mu}{\zeta}$ : This ratio is the term in front of agent-agent force, we can think that keeping it constant could help keeping the same patterns for differents parameters but there is no rigorous proof...
     \end{itemize}
-We start at $\kappa$ = 1000 on a regime where agents are making bandes for one and clusters for another, then we are reducing the $\kappa$ = 10 . To describe quickly the results :
+We start at $\kappa$ = 1000 on a regime where agents are making bandes for one and clusters for another, then we are reducing the $\kappa$ = 10. Images of the end are in the file "test" then "keeping ratio". To describe quickly the results :
 \begin{itemize}
     \item for bandes for long time we have stable bandes for both for long time, then for $\kappa \leq 100$ we can see instabilities emerging creating clusters than captures agents and obstacles around them so the final result is extremly different between adhesive and repulsive and this what we expect to see for the 3 distances (low distance for $200 \leq \kappa \leq 1000$ and huge for $\kappa \leq 100$).
     \item for clusters at the beggining it is very similar and then for repulsive case it is slightly becoming trails (pinned clusters then moving clusters larger and larger and then connected trails) so we want to observe a progressive augmentation for $\kappa$ from 1000 to 10.
 \end{itemize}
 We plot a comparison between the three distances here
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{comparatif_metriques_amas_bandes.png}
+    \caption{barcode and landscapes}
+    \label{fig:comparatif}
+\end{figure}
+
+An analysis is that for $\kappa$ = 100 clusters are very small in adhesive case and huge in repulsive case (but still clusters on both sides),
+and wasserstein is penalising it more than comparing trails and large clusters. for the others distances results are encouraging.\\
+For bandes, $\kappa$ = 10 is uniform state for both so the three distances are describing it well. The distance deacreasing for TDA does not correspond at what a human eye will see.\\
+Distances must be very high for $\kappa$ between 10 and 100 and very low between 200 and 1000, Wasserstein is the best distance to show this.
 \end{document}
