@@ -197,6 +197,7 @@ As done in the article we can take two discrete distributions, project them on a
 to have a distance considering geometric we can think of using fourier transform of our density, the intuition is that it will be very efficient to see difference between bandes and clusters for exemple. We put our two discrete models on a thin grid (also discussion on the choice of the grid) and we take the spectrum of this density. To compare two densities we can take L2 difference of their spectrum.
 
 \subsubsection{Topological data analysis}
+Following method is explained in two pages in the section 3 of \cite{sathiyakumar2024detecting}
 The objective is to map a point cloud to a mathematical vector characterizing its global shape. Based on an article that directly applied this framework to active matter, we explain the general principle.
 
 We start with a point cloud consisting of coordinates $X = \{r_1, r_2, \dots, r_K\}$ in a 2D space.
@@ -255,7 +256,7 @@ We can then compute the persistence landscape contour (or average landscape):
     L(\epsilon) := \frac{1}{M'} \sum_{m=1}^{M'} \lambda_m(\epsilon)
 \end{equation}
 
-Using theoretical results established in the literature, $L(\epsilon)$ is proven to be a continuous function on a bounded interval $[0, \epsilon_{max}]$, belonging to a normed vector space (the $L^p$ space). This provides the mathematical justification to treat these landscapes as standard Euclidean vectors.
+Using theoretical results remained in \cite{sathiyakumar2024detecting}, $L(\epsilon)$ is proven to be a continuous function on a bounded interval $[0, \epsilon_{max}]$, belonging to a normed vector space (the $L^p$ space). This provides the mathematical justification to treat these landscapes as standard Euclidean vectors.
 
 \paragraph{Vectorization and Comparison}
 In practice, this function is not evaluated continuously. We define a regular grid of resolution $K$ over the studied interval, such that $\epsilon_k = k \cdot \Delta\epsilon$ for $k \in \{1, \dots, K\}$. The continuous function $L(\epsilon)$ is sampled to become a vector in $\mathbb{R}^K$:
@@ -279,12 +280,18 @@ Let $\rho(x,y)$ be the local density of active agents. For a given density thres
 \begin{equation}
     \mathcal{X}_\epsilon = \{ (x,y) \in \text{Grid} \mid \rho(x,y) \geq \epsilon \}
 \end{equation}
-Instead of growing balls around points, the filtration parameter $\epsilon$ starts at the global maximum density and progressively decreases to zero :
-\begin{itemize}
-    \item \textbf{Birth:} When the decreasing threshold $\epsilon$ hits a local density peak, an isolated cluster of active particles emerges, creating a new connected component in the $H_0$ homology group.
-    \item \textbf{Death:} As $\epsilon$ continues to decrease, these initially isolated high-density islands expand. When two clusters intersect on the grid, they merge. The younger component "dies" and gets absorbed by the older component.
-\end{itemize}
-Computationally we will take $-\rho$ and apply functions from gudhi library were everything is implemented.
+This filtration is detailed in \cite{dlotko2016rigorous} in subsection 2.2.
+Instead of growing balls around points, the filtration parameter $\epsilon$ starts at the global maximum density and progressively decreases to zero.\\
+To each superlevel set we count the number of connected components as explain in the figure which come from \cite{otter2017roadmap}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{process_filtra_cub.png}
+    \caption{barcode and landscapes}
+    \label{fig:processus_tda}
+\end{figure}
+
+Computationally we will take $-\rho$ and apply functions from gudhi library where everything is implemented.
 
 \subparagraph{Vectorization via Betti Curves}
 Instead of Persistence Landscapes, we vectorize the barcodes using Betti Curves. The Betti curve $\beta_0(\epsilon)$ is a step function defined simply as the rank (or Betti number) of the homology group at a given threshold $\epsilon$ so :
@@ -294,7 +301,7 @@ Instead of Persistence Landscapes, we vectorize the barcodes using Betti Curves.
 This curve directly counts the number of independent clusters existing at the density threshold $\epsilon$. The following is the same as before.
 
 \subsection{comparison on test}
-\subsubsection{typical atterns}
+\subsubsection{typical patterns}
 First, I generate 6 typical patterns to compare how those 3 distances are differenciating them. I made an heatmap which is on the github testing all the pairs and writing the distance associated. We have uniform state, large bandes, thin bandes, trails, big clusters, little clusters.\\
 We are making a little analysis of the result for each distance.
 \begin{itemize}
@@ -303,7 +310,7 @@ We are making a little analysis of the result for each distance.
     \item \textbf{Wasserstein} : For wasserstein distance, in average the ratio between the smallest distance and the higher distance is two times more than the two other measures. Wasserstein quite not see the difference between trails and thin bandes and between uniform states and large bandes. It is penalising more than the others the difference between small clusters and large clusters.
 \end{itemize}
 
-\textbf{Conclusion} : Finally, all distance are little between large bandes and uniform state which is not an issue beacause we can see on the image that the bands clearly exists but are not very distinct. Each one have it's own specifity, for the next test, huge distance between small clusters and huge clusters will be an issue but as showed the heatmap on other patterns wasserstein could be more efficient.
+\textbf{Conclusion} : Finally, all distance are little between large bandes and uniform state which is not an issue because we can see on the image that the bands clearly exists but are not very distinct. Each one have it's own specifity, for the next test, huge distance between small clusters and huge clusters will be an issue but as showed the heatmap on other patterns wasserstein could be more efficient.
 
 \subsubsection{Emergence of difference between adhesion and repulsion}
 We try to find a parameter region where at the beginning patterns are the same and when change a set of parameter patterns are changing. To comparate patterns difference we will use the three distances explained before.\\
@@ -330,4 +337,14 @@ An analysis is that for $\kappa$ = 100 clusters are very small in adhesive case 
 and wasserstein is penalising it more than comparing trails and large clusters. for the others distances results are encouraging.\\
 For bandes, $\kappa$ = 10 is uniform state for both so the three distances are describing it well. The distance deacreasing for TDA does not correspond at what a human eye will see.\\
 Distances must be very high for $\kappa$ between 10 and 100 and very low between 200 and 1000, Wasserstein is the best distance to show this.
+
+
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+
+
 \end{document}
+
+
