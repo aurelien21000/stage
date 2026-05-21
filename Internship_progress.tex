@@ -276,7 +276,7 @@ We change the filtration because VR seems to not work, this method is too sensit
 \\
 Unlike the Vietoris-Rips this method has to be done for a density on a grid. To track the topological features of the density, we use a superlevel set filtration.\\
 
-Let $\rho(x,y)$ be the local density of active agents. For a given density threshold $\epsilon$, the superlevel set is the region of the domain where the density is greater than or equal to the threshold:
+Let $\rho(x,y)$ be the local discrete density of active agents. For a given density threshold $\epsilon$, the superlevel set is the region of the domain where the density is greater than or equal to the threshold:
 \begin{equation}
     \mathcal{X}_\epsilon = \{ (x,y) \in \text{Grid} \mid \rho(x,y) \geq \epsilon \}
 \end{equation}
@@ -338,7 +338,10 @@ and wasserstein is penalising it more than comparing trails and large clusters. 
 For bandes, $\kappa$ = 10 is uniform state for both so the three distances are describing it well. The distance deacreasing for TDA does not correspond at what a human eye will see.\\
 Distances must be very high for $\kappa$ between 10 and 100 and very low between 200 and 1000, Wasserstein is the best distance to show this.
 
-
+\section{Focus on fourier spectrum for pattern recognition}
+\subsection{Get the good informations from the spectrum}
+The strategy which was decided was to extract the informations in two steps, first keep only the relevant pixels with a well choosen cut-off to avoid the noise.
+Then to make an elliptic mask of the data we kept and to get relevant quantifier from the ellips
 
 \bibliographystyle{plain}
 \bibliography{references}

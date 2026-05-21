@@ -12,9 +12,6 @@ def obtenir_spectre_puissance(pos_agents, L=1.0, nb_cases=128):
     #give the spectrum (shift to have it in the center)
     spectre = np.abs(fftshift(fourier)) ** 2
 
-    #Normalisation to compare to other spectrum
-    spectre = spectre / np.sum(spectre)
-
     return spectre
 
 #then the distance between two patterns is only taking the L2 discrete norm between their spectrum
