@@ -13,7 +13,7 @@ def executer_simulation_complete_numba(
 ):
     temps_physique = 0.0
 
-    while temps_physique < T_fin - 1e-9:
+    while temps_physique < T_fin:
 
         # Réinitialisation of all arrays
         compteur_A.fill(0)
@@ -272,7 +272,7 @@ class SimulationSwimmers:
             if key in self.params:
                 self.params[key] = value
 
-        #adaptating all constants
+        # on doit recalculer les constantes
         if self.params['tau'] > 0:
             self.C_phi_factor = -3.0 * self.params['C_phi'] / (np.pi * self.params['tau'] ** 2)
         else:
