@@ -341,12 +341,33 @@ Distances must be very high for $\kappa$ between 10 and 100 and very low between
 \section{Focus on fourier spectrum for pattern recognition}
 \subsection{Get the good informations from the spectrum}
 The strategy which was decided was to extract the informations in two steps, first keep only the relevant pixels with a well choosen cut-off to avoid the noise.
-Then to make an elliptic mask of the data we kept and to get relevant quantifier from the ellips
+Then to make an elliptic mask of the data we kept and to get relevant quantifier from the ellips.
+\subsubsection{Relevant cut-off}
+We are thinking of a rationnal way to make a cut-off of the pixels in the spectrum to avoid noise whithout loosing informations. For now,
+I generated 200 random configurations, took the fourier spectrum and defined the cut-off equal to the higher maximum value over all the configurations.
+It seemed to work well to start having good results but needs to be justified more.
+I finally took 1e6 as the cut-off.
+\subsubsection{Ellips mask}
+We are then calculating the semi-major axis, semi-minor axis and the angle of semi-major axis of an elliptic approximation of the datas.
+To do it so we calculate order 1 moments :
+$$
+\bar{x} = \frac{M_{10}}{M_{00}} = \frac{\sum x \cdot I(x,y)}{\sum I(x,y)} \quad ; \quad \bar{y} = \frac{M_{01}}{M_{00}} = \frac{\sum y \cdot I(x,y)}{\sum I(x,y)}
+$$
+Then we use the central moments define as :
+$$
+\mu_{pq} = \sum_{x} \sum_{y} (x - \bar{x})^p (y - \bar{y})^q I(x, y)
+$$
+To calculate the covariance matrice :
+$$
+C = \frac{1}{M_{00}} \begin{pmatrix} \mu_{20} & \mu_{11} \\ \mu_{11} & \mu_{02} \end{pmatrix}
+$$
+Calling the eigenvalues $\lambda_{max}$ and $\lambda_{min}$ we get the semi-major axis $a = k \cdot \sqrt{\lambda_{max}}$
+and the semi-minor axis $b = k \cdot \sqrt{\lambda_{min}}$ where k is number of std, we take 3 here to have quite all the pixels in the ellips.\\
+To have the angle we get easily the eigenvectors of C which give the orientatio of both axis then get the angle by taking the arctan.\\
+Finally the excentricity is defined as : $e = \sqrt{1 - \frac{\lambda_{min}}{\lambda_{max}}}$.
 
 \bibliographystyle{plain}
 \bibliography{references}
-
-
 
 \end{document}
 

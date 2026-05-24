@@ -1,5 +1,4 @@
 import numpy as np
-from numpy.ma.extras import column_stack
 
 
 def filtrer_spectre_pour_ellipse(spectrum, cutoff=1.3e-3):
@@ -8,7 +7,7 @@ def filtrer_spectre_pour_ellipse(spectrum, cutoff=1.3e-3):
     
 
     spectrum_clean = np.copy(spectrum)
-    spectrum_clean[center, center] = 0.0 #remove central pixel
+    spectrum_clean[center, center] = 0.0 #remove the continuous component
 
     i_max = np.max(spectrum_clean)
     if i_max < cutoff: #uniform state so we remove everything (and return false to simplify functions after)

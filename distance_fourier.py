@@ -4,7 +4,7 @@ import numpy as np
 
 def obtenir_spectre_puissance(pos_agents, L=1.0, nb_cases=128):
     h = L / nb_cases #size of a case
-    densite = calculer_densite_pic_ordre1(pos_agents, L, nb_cases, h)
+    densite = calculer_densite_pic_ordre1(pos_agents, L, nb_cases)
 
     #make the 2D fourier transform
     fourier = fft2(densite)
