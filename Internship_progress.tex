@@ -11,10 +11,10 @@
 \usepackage{amsopn}
 
 \graphicspath{
-    {images/TDA/}
-    {images/phase_final_repulsive/}
-    {images/phase_final_adhesive/}
-    {images/test_distance/}
+    {images_lateX/TDA/}
+    {images_lateX/phase_final_repulsive/}
+    {images_lateX/phase_final_adhesive/}
+    {images_lateX/test_distance/}
 }
 
 \title{Internship Progress}
@@ -365,6 +365,32 @@ Calling the eigenvalues $\lambda_{max}$ and $\lambda_{min}$ we get the semi-majo
 and the semi-minor axis $b = k \cdot \sqrt{\lambda_{min}}$ where k is number of std, we take 3 here to have quite all the pixels in the ellips.\\
 To have the angle we get easily the eigenvectors of C which give the orientatio of both axis then get the angle by taking the arctan.\\
 Finally the excentricity is defined as : $e = \sqrt{1 - \frac{\lambda_{min}}{\lambda_{max}}}$.
+
+\subsection{Application on relevant datas}
+Quick correction on section 3.2.2, after launching simulations for a longer time for bandes, instabilities appears and for all values of $\kappa$ we can observe a mix of clusters and bandes at the end of the simulation (the state is metastable),
+but it is still interesting to see the result of the fourier method described before on such datas.\\
+\begin{figure}[hbp!]
+    \centering
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images_lateX/position_and_spectrum_ratio/montage_Ligne_Amas_k10.png}
+        \caption{Amas ($\kappa$ =10)}
+        \label{fig:spectre_amas_k10}
+    \end{minipage}\hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images_lateX/position_and_spectrum_ratio/montage_Ligne_Bandes_k70.png}
+        \caption{Bandes\\ ($\kappa$ =70)}
+        \label{fig:spectre_bandes_$\kappa$=70}
+    \end{minipage}\hfill
+    \begin{minipage}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images_lateX/position_and_spectrum_ratio/montage_Ligne_Bandes_k800.png}
+        \caption{Bandes\\ ($\kappa$ =800)}
+        \label{fig:spectre_bandes_k800}
+    \end{minipage}
+\end{figure}
+we can see that it is still working very efficiently on true simulated datas, same as for synthetical datas and an interesting point is that for mixing patterns we can see the pixels for bandes and the shape of the cluster however we loose this information with the ellips.
 
 \bibliographystyle{plain}
 \bibliography{references}

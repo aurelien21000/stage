@@ -272,7 +272,6 @@ class SimulationSwimmers:
             if key in self.params:
                 self.params[key] = value
 
-        # on doit recalculer les constantes
         if self.params['tau'] > 0:
             self.C_phi_factor = -3.0 * self.params['C_phi'] / (np.pi * self.params['tau'] ** 2)
         else:
