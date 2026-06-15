@@ -13,5 +13,4 @@ def obtenir_spectre_puissance(pos_agents, L=1.0, nb_cases=128):
     spectre = np.abs(fftshift(fourier)) ** 2
 
     return spectre
-
 #then the distance between two patterns is only taking the L2 discrete norm between their spectrum

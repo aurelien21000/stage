@@ -10,6 +10,13 @@
 \usepackage{amstext}
 \usepackage{amsopn}
 
+
+\setlength{\textwidth}{17cm}     % Largeur de la zone de texte (par défaut ~12cm)
+\setlength{\textheight}{24cm}    % Hauteur de la zone de texte (par défaut ~19cm)
+\setlength{\oddsidemargin}{-0.5cm} % Marge gauche pour les pages impaires
+\setlength{\evensidemargin}{-0.5cm}% Marge gauche pour les pages paires
+\setlength{\topmargin}{-1.5cm}     % Marge en haut
+
 \graphicspath{
     {images_lateX/TDA/}
     {images_lateX/phase_final_repulsive/}
@@ -369,7 +376,7 @@ Finally the excentricity is defined as : $e = \sqrt{1 - \frac{\lambda_{min}}{\la
 \subsection{Application on relevant datas}
 Quick correction on section 3.2.2, after launching simulations for a longer time for bandes, instabilities appears and for all values of $\kappa$ we can observe a mix of clusters and bandes at the end of the simulation (the state is metastable),
 but it is still interesting to see the result of the fourier method described before on such datas. \\
-\begin{figure}[hbp!]
+\begin{figure}[]
     \centering
     \begin{minipage}{0.32\textwidth}
         \centering
@@ -390,7 +397,149 @@ but it is still interesting to see the result of the fourier method described be
         \label{fig:spectre_bandes_k800}
     \end{minipage}
 \end{figure}
-we can see that it is still working very efficiently on true simulated datas, same as for synthetical datas and an interesting point is that for mixing patterns we can see the pixels for bandes and the shape of the cluster however we loose this information with the ellips.
+we can see that it is still working very efficiently on true simulated datas, same as for synthetical datas and an interesting point is that for mixing patterns we can see the pixels for bandes and the shape of the cluster however we loose this information with the ellips.\\
+My next work is to first make sure the cluster's emergence in bandes patterns for adhesive case doesn't come from numerical instabilities. Then maybe search for it analytically by making a stability analysis starting with a bandes's repartition
+
+\newpage
+
+\section{Mean field limit in ECM model}
+\subsection{Mean field limit of cells}
+pour s'entrainer on va passer à la limite en champ moyen pour le modèle ECM
+
+\begin{align}
+d Z_k &= u_0 \alpha_k dt - \frac{1}{\zeta N} \sum_{i=1}^N \nabla_{Z_k} \phi^{FS} (X_i, \theta_i, Z_k) dt - \frac{1}{\zeta M} \sum_{l \neq k}^M \nabla_{Z_k} \phi^{SS} (Z_k - Z_l) dt, \tag{1a} \\
+    d \alpha_k &= P_{\alpha_k^\perp} \circ \left[ \nu_S \bar{\alpha}_k^S dt + \nu_F \bar{\alpha}_k^F dt + \sqrt{2d_s} d \tilde{B}_t^k \right]. \tag{1b}
+\end{align}
+
+On passe à la description en mesure empirique :
+
+$$h^M(t, x, \alpha) = \frac{1}{M} \sum_{k=1}^M \delta_{Z_k(t)}(x) \otimes \delta_{\alpha_k(t)}(\alpha)$$
+$$f^N(t, x, \theta) = \frac{1}{N} \sum_{i=1}^N \delta_{X_i(t)}(x) \otimes \delta_{\theta_i(t)}(\theta)$$
+
+Ensuite on l'évalue contre $\psi(x,\alpha)$ fonction test :  $\langle h^M, \psi \rangle = \frac{1}{M}\sum_k \psi(Z_k, \alpha_k)$\\
+On applique ensuite la formule d'ito pour arriver à :
+$$d \langle h^M, \psi \rangle = \frac{1}{M} \sum_{k=1}^M \left[ \nabla_x \psi(Z_k, \alpha_k) \cdot dZ_k + \nabla_\alpha \psi(Z_k, \alpha_k) \cdot d\alpha_k + d_s \Delta_\alpha \psi(Z_k, \alpha_k) dt \right]$$
+Dans la partie dérivée seconde de la formule d'ito on ne gade que le terme de diffusion car les autres étant déterministe ils disparaissent dans le crochet.
+On remplace ensuite d$Z_k$ et d$\alpha_k$
+
+\begin{align*}
+d \langle h^M, \psi \rangle &= \frac{1}{M} \sum_{k=1}^M \Bigg[ \nabla_x \psi(Z_k, \alpha_k) \cdot \left( u_0 \alpha_k - \frac{1}{\zeta M} \sum_{l \neq k}^M \nabla_{Z_k} \phi^{SS}(Z_k - Z_l) - \frac{1}{\zeta N} \sum_{i=1}^N \nabla_{Z_k} \phi^{FS}(X_i, \theta_i, Z_k) \right) \\
+&\quad + \nabla_\alpha \psi(Z_k, \alpha_k) \cdot P_{\alpha_k^\perp} \big[ \nu_S \bar{\alpha}_k^S + \nu_F \bar{\alpha}_k^F \big] + d_s \Delta_\alpha \psi(Z_k, \alpha_k) \Bigg] dt + \nabla_\alpha \psi(Z_k, \alpha_k) \cdot \sqrt{2d_s} d\tilde{B}_t^k
+\end{align*}
+
+\subsection{Réécriture intégrale contre les mesures empiriques}
+De manière plutot direct on transforme les doubles sommes en produit contre les mesures empiriques (c'est simplement une réécriture des sommes) :
+
+\begin{align*}
+d \langle h^M, \psi \rangle &= \\
+\left[ \iint \nabla_x \psi(x,& \alpha) \cdot \underbrace{\left( u_0 \alpha - \frac{1}{\zeta} \iint \nabla_x \phi^{SS}(x - x') h^M(x', \alpha') dx' d\alpha' - \frac{1}{\zeta} \iint \nabla_x \phi^{FS}(x', \theta', x) f^N(x', \theta') dx' d\theta' \right)}_{\mathcal{A}[f^N, h^M](x, \alpha)} h^M(x, \alpha) dx d\alpha \right. \\
+&\quad + \iint \nabla_\alpha \psi(x, \alpha) \cdot \underbrace{P_{\alpha^\perp} \left[ \nu_S \bar{\alpha}^S[h^M](x) + \nu_F \bar{\alpha}^F[f^N](x) \right]}_{\mathcal{B}[f^N, h^M](x, \alpha)} h^M(x, \alpha) dx d\alpha \\
+&\quad \left. + \iint d_s \Delta_\alpha \psi(x, \alpha) h^M(x, \alpha) dx d\alpha \right] dt + \frac{\sqrt{2d_s}}{M} \sum_{k=1}^M \nabla_\alpha \psi(Z_k(t), \alpha_k(t)) \cdot d\tilde{B}_t^k
+\end{align*}
+avec :
+$$J(x, t) = \int_{|x - y| \le r_A} \int_{\mathbb{S}^1} \alpha' h^M(t, y, \alpha') \, d\alpha' \, dy$$$$\bar{\alpha}^S[h^M](x) = \frac{J(x, t)}{|J(x, t)|}$$
+Pour le terme stochastique, on calcule sa variation quadratique qui donne :
+$$\frac{2d_s}{M^2} \sum_{k=1}^M \int_0^t \left| \nabla_\alpha \psi(Z_k(s), \alpha_k(s)) \right|^2 ds$$
+$\psi$ étant borné, on obtient que la variation quadratique tend vers 0 quand M $\rightarrow \infty$, par doob cela donne que le terme converge fortement a fortiori faiblement vers 0.
+
+\subsection{propagation du chaos}
+Maintenant qu'on a cette formule il faut pouvoir passer à la limite faible en M et N pour obtenir une formulation faible d'une edp sur les densités h et f. Pour cela on utilise la propagation du chaos. Dans le cours de vlasov il est dit que si les termes de drift et de diffusion sont lipschitz alors il y a propagation du chaos, ainsi en supposant que les potentiels sont lipschitz on obtient un corollaire qui majore puis qui nous donne la chaoticité qui est équivalente à la convergence en loi de la mesure empirique ce qui revient donc à la convergence faible souhaitée.
+Pour le voir on met le système sous la forme du cours
+$$dX_t^{i,N} = \frac{1}{N}\sum_{j=1}^N \beta(X_t^{i,N}, X_t^{j,N})dt + \gamma(X_t^{i,N}) dB_t^i$$
+avec $\mathbf{Y}_k(t) = \begin{pmatrix} Z_k(t) \\ \alpha_k(t) \end{pmatrix} \in \mathbb{R}^2 \times \mathbb{S}^1$
+et on pose :
+$$\beta(\mathbf{Y}_k, \mathbf{Y}_l) = \begin{pmatrix} - \frac{1}{\zeta} \nabla \phi^{SS}(Z_k - Z_l) \\ P_{\alpha_k^\perp} [\nu_S \alpha_l 1_{|Z_k - Z_l| \le r_A}] \end{pmatrix}$$
+et :
+$$b(\mathbf{Y}_k, t) = \begin{pmatrix} u_0 \alpha_k - \frac{1}{\zeta} \nabla \phi^{FS} * \rho_f(Z_k) \\ P_{\alpha_k^\perp} [\nu_F \bar{\alpha}^F[f](Z_k)] \end{pmatrix}$$
+et :
+$\sigma = \begin{pmatrix} 0 \\ \sqrt{2d_s} \end{pmatrix}$\\
+La plupart des termes sont lipschitz cependant le terme d'alignement ne l'est pas quand J $\rightarrow$ 0, le passage n'est donc pas si clair. On l'admet pour la suite.
+
+\subsection{Passage à la limite de champ moyen ($M, N \to \infty$)}
+On suppose les convergences faibles $h^M \rightharpoonup h$ et $f^N \rightharpoonup f$.  L'équation intégrale limite s'écrit alors :
+
+\begin{equation}
+\frac{d}{dt} \iint \psi h \, dx d\alpha = \iint \Big( \nabla_x \psi \cdot \mathcal{A}[f,h] + \nabla_\alpha \psi \cdot \mathcal{B}[f,h] + d_s \Delta_\alpha \psi \Big) h \, dx d\alpha
+\end{equation}
+
+\subsection{Intégration par parties et EDP forte}
+On transfère les opérateurs différentiels de la fonction test $\psi$ vers la densité $h$ en utilisant les règles usuelles d'intégration par parties ($\int \nabla \psi \cdot \vec{V} h = - \int \psi \nabla \cdot (\vec{V} h)$ et $\int \Delta \psi h = \int \psi \Delta h$). On obtient :
+
+\begin{equation*}
+\iint \psi(x, \alpha) \bigg[ \partial_t h + \nabla_x \cdot \Big( \mathcal{A}[f,h] h \Big) + \nabla_\alpha \cdot \Big( \mathcal{B}[f,h] h \Big) - d_s \Delta_\alpha h \bigg] dx d\alpha = 0
+\end{equation*}
+
+Cette égalité étant vraie pour toute fonction test $\psi$ lisse et à support compact, le crochet vaut zéro au sens des distributions, ce qui donne l'edp finale pour la densité des cellules :
+
+\begin{equation}
+\partial_t h + \nabla_x \cdot \Big( \mathcal{A}[f,h] h \Big) + \nabla_\alpha \cdot \Big( \mathcal{B}[f,h] h \Big) = d_s \Delta_\alpha h
+\end{equation}
+
+\section{Limite en champ moyen du réseau de fibres}
+
+\subsection{Équations microscopiques et mesures empiriques}
+On rappelle les EDS sur la position et l'orientation du réseau de fibres. La preuve va être foncièrement la même pour les intéractions fibres-fibres et fibres-cellules. Pour les liens on remplace la matrice de lien $p_{ij}$ par une somme sur les indices des liens directement, allant jusqu'à K (variable aléatoire). (i,j) et (j,i) sont deux liens différents donc on découpe la somme en 2 pour compter entièrement la contribution du lien réelle.
+
+\begin{subequations}
+\label{eq:micro_fibres_xi}
+\begin{align}
+\frac{dX_i}{dt} &= \mu_X \Bigg[ -\frac{1}{M}\sum_{k=1}^M \nabla_{X_i}\phi^{FS}(X_i, \theta_i, Z_k) - \frac{1}{N}\sum_{j=1}^N \nabla_{X_i}\phi^{FF}(X_i, \theta_i, X_j, \theta_j) \nonumber \\
+&\qquad - \frac{1}{2}\sum_{\substack{k=1 \\ i(k)=i}}^K \nabla_{x_1}V(X_{i(k)}, \theta_{i(k)}, X_{j(k)}, \theta_{j(k)}) - \frac{1}{2}\sum_{\substack{k=1 \\ j(k)=i}}^K \nabla_{x_2}V(X_{i(k)}, \theta_{i(k)}, X_{j(k)}, \theta_{j(k)}) \Bigg], \tag{2a} \\
+\frac{d\theta_i}{dt} &= \mu_\theta \Bigg[ -\frac{1}{M}\sum_{k=1}^M \partial_{\theta_i}\phi^{FS}(X_i, \theta_i, Z_k) - \frac{1}{N}\sum_{j=1}^N \partial_{\theta_i}\phi^{FF}(X_i, \theta_i, X_j, \theta_j) \nonumber \\
+&\qquad - \frac{1}{2}\sum_{\substack{k=1 \\ i(k)=i}}^K \left(\partial_{\theta_1}V(X_{i(k)}, \dots) + \partial_{\theta_1}W^{al}(\theta_{i(k)}, \theta_{j(k)})\right) \nonumber \\
+&\qquad - \frac{1}{2}\sum_{\substack{k=1 \\ j(k)=i}}^K \left(\partial_{\theta_2}V(\dots, X_{j(k)}) + \partial_{\theta_2}W^{al}(\theta_{j(k)}, \theta_{i(k)})\right) \Bigg]. \tag{2b}
+\end{align}
+\end{subequations}
+
+On isole les constantes passées de l'autre côté $\mu_X = (LK_i)^{-1}$ et $\mu_\theta = \left(\xi^\perp \frac{L^3}{12}\right)^{-1}$ (il faut simplement garder en tete que $K_i$ dépend de $\theta$). On redéfinit les mesures empiriques des cellules ($h^M$), des fibres ($f^N$) et on rajoute celle du réseau ($g^K$). On symétrise $g^K$ pour ne pas avoir de problème d'ordre des liens :
+\begin{align*}
+f^N(t, x, \theta) &= \frac{1}{N} \sum_{i=1}^N \delta_{X_i(t)}(x) \otimes \delta_{\theta_i(t)}(\theta), \\
+h^M(t, z, \alpha) &= \frac{1}{M} \sum_{k=1}^M \delta_{Z_k(t)}(z) \otimes \delta_{\alpha_k(t)}(\alpha), \\
+g^K(t, x_1, \theta_1, x_2, \theta_2) &= \frac{1}{2K} \sum_{k=1}^K \Big[ \delta_{(X_{i(k)}, \theta_{i(k)})}(x_1, \theta_1) \otimes \delta_{(X_{j(k)}, \theta_{j(k)})}(x_2, \theta_2) \\
+&\qquad\qquad + \, \delta_{(X_{j(k)}, \theta_{j(k)})}(x_1, \theta_1) \otimes \delta_{(X_{i(k)}, \theta_{i(k)})}(x_2, \theta_2) \Big].
+\end{align*}
+On définit la constante de ratio limite entre le nombre de liens et le nombre de fibres lorsqu'on passe à la limite : $\lim_{N, K \to \infty} \frac{K}{N} = \xi > 0$.
+
+\subsection{Réécriture intégrale et symétrisation}
+De la même manière on évalue la distribution des fibres contre une fonction test $\phi(x, \theta)$ :
+\[
+\frac{d}{dt} \langle f^N, \phi \rangle = \frac{1}{N} \sum_{i=1}^N \left[ \nabla_x \phi(X_i, \theta_i) \cdot \frac{dX_i}{dt} + \partial_\theta \phi(X_i, \theta_i) \frac{d\theta_i}{dt} \right]
+\]
+
+La seule différence sera pour la forme intégrale contre la mesure empirique des termes sur les liens. En sommant directement sur l'ensemble des liens $k = 1 \dots K$ plutôt que sur les fibres $i$, chaque lien contribue exactement deux fois (une fois pour son nœud de départ $i(k)$ et une fois pour son noeud d'arrivée $j(k)$). La somme microscopique devient directement :
+\begin{align*}
+-\frac{\mu_X}{2N} \sum_{k=1}^K \Big[ \nabla_{x} \phi(X_{i(k)}, \theta_{i(k)}) \cdot \nabla_{x_1} &V(X_{i(k)}, \theta_{i(k)}, X_{j(k)}, \theta_{j(k)}) \\
+&+ \nabla_{x} \phi(X_{j(k)}, \theta_{j(k)}) \cdot \nabla_{x_2} V(X_{i(k)}, \theta_{i(k)}, X_{j(k)}, \theta_{j(k)}) \Big]
+\end{align*}
+
+Par symétrie de la loi de Hooke ($\nabla_{x_2} V(x_1, \theta_1, x_2, \theta_2) = \nabla_{x_1} V(x_2, \theta_2, x_1, \theta_1)$) la somme correspond au potentiel et la fonction test évalués contre la mesure empirique. On obtient alors :
+$$
+-\mu_X \frac{K}{N} \iint \nabla_{x_1} \phi(x_1, \theta_1) \cdot \nabla_{x_1} V(x_1, \theta_1, x_2, \theta_2) g^K(x_1, \theta_1, x_2, \theta_2) \, dx_1 d\theta_1 dx_2 d\theta_2
+$$
+
+Pour les interactions fibres-fibres et fibres-cellules la réécriture est la même que pour la rpeuve sur les cellules. Pour la réorientation angulaire, c'est la même chose que ci-dessus. On obtient au total :
+\begin{align*}
+\frac{d}{dt} \langle f^N, \phi \rangle &= - \iint \nabla_x \phi \cdot \left( \iint \nabla_x \phi^{FS} h^M \, dz d\alpha + \iint \nabla_x \phi^{FF} f^N \, dx' d\theta' \right) \mu_X f^N \, dx d\theta \\
+&\quad - \frac{K}{N} \mu_X \iint \nabla_{x_1} \phi \cdot \nabla_{x_1} V \, g^K \, dx_1 d\theta_1 dx_2 d\theta_2 \\
+&\quad - \iint \partial_\theta \phi \left( \iint \partial_\theta \phi^{FS} h^M \, dz d\alpha + \iint \partial_\theta \phi^{FF} f^N \, dx' d\theta' \right) \mu_\theta f^N \, dx d\theta \\
+&\quad - \frac{K}{N} \mu_\theta \iint \partial_{\theta_1} \phi \left( \partial_{\theta_1} V + \partial_{\theta_1} W^{al} \right) g^K \, dx_1 d\theta_1 dx_2 d\theta_2
+\end{align*}
+
+\subsection{Passage à la limite de champ moyen ($M, N \to \infty$)}
+On admet à nouveau la convergence faible des mesures empiriques ($h^M \rightharpoonup h$, $f^N \rightharpoonup f$, $g^K \rightharpoonup g$) en passant à la limite et en transférant les opérateurs par IPP on obtient l'EDP de la forme :
+\begin{equation}
+\partial_t f + \nabla_x \cdot J_1[g,h] + \partial_\theta J_2[g,h] = 0
+\end{equation}
+
+Avec les flux $J_1$ (spatial) et $J_2$ (angulaire) :
+\begin{align*}
+J_1[g,h](x,\theta) = -\mu_X \Bigg[ &f(x, \theta) \iint \nabla_x \phi^{FS}(x, \theta, z) h(z, \alpha) \, dz d\alpha + f(x, \theta) \iint \nabla_x \phi^{FF}(x, \theta, x', \theta') f(x', \theta') \, dx' d\theta' \\
+&+ \xi \iint \nabla_x V(x, \theta, x', \theta') g(x, \theta, x', \theta') \, dx' d\theta' \Bigg]
+\end{align*}
+\begin{align*}
+J_2[g,h](x,\theta) = -\mu_\theta \Bigg[ &f(x, \theta) \iint \partial_\theta \phi^{FS}(x, \theta, z) h(z, \alpha) \, dz d\alpha + f(x, \theta) \iint \partial_\theta \phi^{FF}(x, \theta, x', \theta') f(x', \theta') \, dx' d\theta' \\
+&+ \xi \iint \left( \partial_\theta V(x, \theta, x', \theta') + \partial_\theta W^{al}(\theta, \theta') \right) g(x, \theta, x', \theta') \, dx' d\theta' \Bigg]
+\end{align*}
 
 \bibliographystyle{plain}
 \bibliography{references}
